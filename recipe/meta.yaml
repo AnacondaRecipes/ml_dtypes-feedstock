@@ -34,7 +34,8 @@ test:
     - ml_dtypes
   commands:
     - pip check
-    - pytest -n auto
+    - pytest -n auto  # [not ppc64le]
+    - pytest --dist no  # [ppc64le]
   source_files:
     - ml_dtypes/tests
   requires:
