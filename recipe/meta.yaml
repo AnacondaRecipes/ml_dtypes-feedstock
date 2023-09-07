@@ -19,10 +19,12 @@ requirements:
     - {{ compiler('c') }}
   host:
     - python
-    - numpy
-    - pybind11 >=2.10.0,<2.11.dev0
-    - setuptools >=67.6.0,<67.7.dev0
+    - numpy >=1.21.2  # [py<311]
+    - numpy >=1.23.3  # [py>=311]
+    - pybind11 2.10
+    - setuptools >=67.6.0,<68
     - pip
+    - wheel
   run:
     - python
     - {{ pin_compatible('numpy') }}
