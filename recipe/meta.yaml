@@ -41,8 +41,6 @@ test:
     - pip
     - pytest
     - pytest-xdist
-    - pylint >=2.6.0
-    - pyink
     - absl-py
 
 about:
