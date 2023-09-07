@@ -45,13 +45,19 @@ test:
 
 about:
   home: https://pypi.org/project/ml-dtypes/
-  summary: A stand-alone implementation of several NumPy dtype extensions used in machine learning
+  summary: A stand-alone implementation of several NumPy dtype extensions used in machine learning libraries
+  description: |
+    ml_dtypes is a stand-alone implementation of several NumPy dtype extensions used in machine learning libraries, including:
+    bfloat16: an alternative to the standard float16 format
+    float8_*: several experimental 8-bit floating point representations including:
+      float8_e4m3b11fnuz, float8_e4m3fn, float8_e4m3fnuz, float8_e5m2, float8_e5m2fnuz
+    int4 and uint4: low precision integer types.
   dev_url: https://github.com/jax-ml/ml_dtypes
   doc_url: https://github.com/jax-ml/ml_dtypes
-  license: MPL-2.0 AND Apache-2.0
-  license_file:
-    - LICENSE.eigen
-    - LICENSE
+  # Mozilla license is also present, but only applies to pre-compiled wheels.
+  license: Apache-2.0
+  license_family: APACHE
+  license_file: LICENSE
 
 extra:
   recipe-maintainers:
