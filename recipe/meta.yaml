@@ -10,23 +10,20 @@ source:
   sha256: 6488eb642acaaf08d8020f6de0a38acee7ac324c1e6e92ee0c0fea42422cb797
 
 build:
-  script: {{ PYTHON }} -m pip install . -vv
-  number: 1
+  script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
+  number: 0
 
 requirements:
   build:
     - {{ compiler('cxx') }}
     - {{ compiler('c') }}
-    - cross-python_{{ target_platform }}   # [build_platform != target_platform]
-    - python                               # [build_platform != target_platform]
-    - numpy                                # [build_platform != target_platform]
-    - pybind11 >=2.10.0,<2.11.dev0         # [build_platform != target_platform]
   host:
     - python
-    - numpy
-    - pybind11 >=2.10.0,<2.11.dev0
-    - setuptools >=67.6.0,<67.7.dev0
+    - numpy {{ numpy }}
+    - pybind11 2.10
+    - setuptools >=67.6.0,<68
     - pip
+    - wheel
   run:
     - python
     - {{ pin_compatible('numpy') }}
@@ -36,26 +33,31 @@ test:
     - ml_dtypes
   commands:
     - pip check
-    - pytest -n auto
+    - pytest -n auto  # [not ppc64le]
+    - pytest --dist no  # [ppc64le]
   source_files:
     - ml_dtypes/tests
   requires:
     - pip
     - pytest
     - pytest-xdist
-    - pylint >=2.6.0
-    - pyink
     - absl-py
 
 about:
   home: https://pypi.org/project/ml-dtypes/
-  summary: A stand-alone implementation of several NumPy dtype extensions used in machine learning
+  summary: A stand-alone implementation of several NumPy dtype extensions used in machine learning libraries
+  description: |
+    ml_dtypes is a stand-alone implementation of several NumPy dtype extensions used in machine learning libraries, including:
+    bfloat16: an alternative to the standard float16 format
+    float8_*: several experimental 8-bit floating point representations including:
+      float8_e4m3b11fnuz, float8_e4m3fn, float8_e4m3fnuz, float8_e5m2, float8_e5m2fnuz
+    int4 and uint4: low precision integer types.
   dev_url: https://github.com/jax-ml/ml_dtypes
   doc_url: https://github.com/jax-ml/ml_dtypes
-  license: MPL-2.0 AND Apache-2.0
-  license_file:
-    - LICENSE.eigen
-    - LICENSE
+  # Mozilla license is also present, but only applies to pre-compiled wheels.
+  license: Apache-2.0
+  license_family: APACHE
+  license_file: LICENSE
 
 extra:
   recipe-maintainers:
