@@ -32,6 +32,8 @@ requirements:
 test:
   imports:
     - ml_dtypes
+  requires:
+    - pip
   commands:
     - pip check
     # Maintainers dropped tests from source builds, we may want to build from source if problems are found.
