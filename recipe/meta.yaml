@@ -1,5 +1,5 @@
 {% set name = "ml_dtypes" %}
-{% set version = "0.3.1" %}
+{% set version = "0.4.0" %}
 
 package:
   name: {{ name|lower }}
@@ -7,7 +7,7 @@ package:
 
 source:
   url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/ml_dtypes-{{ version }}.tar.gz
-  sha256: 60778f99194b4c4f36ba42da200b35ef851ce4d4af698aaf70f5b91fe70fc611
+  sha256: eaf197e72f4f7176a19fe3cb8b61846b38c6757607e7bf9cd4b1d84cd3e74deb
 
 build:
   script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
@@ -21,8 +21,7 @@ requirements:
   host:
     - python
     - numpy {{ numpy }}
-    - pybind11 2.10
-    - setuptools >=68.1.0,<69
+    - setuptools
     - pip
     - wheel
   run:
