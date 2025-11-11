@@ -1,18 +1,18 @@
 {% set name = "ml_dtypes" %}
-{% set version = "0.5.1" %}
+{% set version = "0.5.3" %}
 
 package:
   name: {{ name|lower }}
   version: {{ version }}
 
 source:
-  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/ml_dtypes-{{ version }}.tar.gz
-  sha256: ac5b58559bb84a95848ed6984eb8013249f90b6bab62aa5acbad876e256002c9
+  url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/ml_dtypes-{{ version }}.tar.gz
+  sha256: 95ce33057ba4d05df50b1f3cfefab22e351868a843b3b15a46c65836283670c9
 
 build:
   script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
   number: 0
-  skip: True # [py<39]
+  skip: true  # [py<39]
 
 requirements:
   build:
@@ -21,12 +21,14 @@ requirements:
   host:
     - python
     - numpy {{ numpy }}
-    - setuptools
+    - setuptools >=80.8.0,<80.9.dev0
     - pip
-    - wheel
+    - numpy >=2.0,<3.dev0
   run:
     - python
     - numpy
+    - {{ pin_compatible('numpy') }}
+
 test:
   imports:
     - ml_dtypes
@@ -43,7 +45,7 @@ about:
     ml_dtypes is a stand-alone implementation of several NumPy dtype extensions used in machine learning libraries, including:
     bfloat16: an alternative to the standard float16 format
     float8_*: several experimental 8-bit floating point representations including:
-      float8_e4m3b11fnuz, float8_e4m3fn, float8_e4m3fnuz, float8_e5m2, float8_e5m2fnuz
+    float8_e4m3b11fnuz, float8_e4m3fn, float8_e4m3fnuz, float8_e5m2, float8_e5m2fnuz
     int4 and uint4: low precision integer types.
   dev_url: https://github.com/jax-ml/ml_dtypes
   doc_url: https://github.com/jax-ml/ml_dtypes
