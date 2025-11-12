@@ -6,8 +6,12 @@ package:
   version: {{ version }}
 
 source:
-  url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/ml_dtypes-{{ version }}.tar.gz
-  sha256: 95ce33057ba4d05df50b1f3cfefab22e351868a843b3b15a46c65836283670c9
+  - url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+    sha256: 95ce33057ba4d05df50b1f3cfefab22e351868a843b3b15a46c65836283670c9
+  - url: https://github.com/jax-ml/{{ name }}/archive/refs/tags/v{{ version }}.tar.gz
+    sha256: 4247e493b5b6fa01574b14fb0377ba3a6e76c7bdc0ae309f08d7d7bcc5bbbd7d
+    folder: test_src
+
 
 build:
   script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
@@ -16,30 +20,35 @@ build:
 
 requirements:
   build:
-    - {{ compiler('cxx') }}
+    - {{ stdlib('c') }}
     - {{ compiler('c') }}
+    - {{ compiler('cxx') }}
   host:
     - python
-    - numpy {{ numpy }}
-    - setuptools >=80.8.0,<80.9.dev0
     - pip
-    - numpy >=2.0,<3.dev0
+    - numpy {{ numpy }}
+    - setuptools >=80.8.0,<81.0.0
   run:
     - python
-    - numpy
-    - {{ pin_compatible('numpy') }}
+    - numpy # bounds through run_exports
 
 test:
+  source_files:
+    - test_src
   imports:
     - ml_dtypes
   requires:
     - pip
+    - pytest
+    - absl-py
+    - numpy <2
   commands:
     - pip check
-    # Maintainers dropped tests from source builds, we may want to build from source if problems are found.
+    - python -c "from importlib.metadata import version; assert(version('{{ name }}')=='{{ version }}')"
+    - pytest -v test_src/ml_dtypes/tests
 
 about:
-  home: https://pypi.org/project/ml-dtypes/
+  home: https://pypi.org/project/ml-dtypes
   summary: A stand-alone implementation of several NumPy dtype extensions used in machine learning libraries
   description: |
     ml_dtypes is a stand-alone implementation of several NumPy dtype extensions used in machine learning libraries, including:
