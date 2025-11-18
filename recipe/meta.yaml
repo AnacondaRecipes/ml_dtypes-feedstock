@@ -1,53 +1,65 @@
 {% set name = "ml_dtypes" %}
-{% set version = "0.5.1" %}
+{% set version = "0.5.4" %}
 
 package:
   name: {{ name|lower }}
   version: {{ version }}
 
 source:
-  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/ml_dtypes-{{ version }}.tar.gz
-  sha256: ac5b58559bb84a95848ed6984eb8013249f90b6bab62aa5acbad876e256002c9
+    url: https://github.com/jax-ml/{{ name }}/archive/refs/tags/v{{ version }}.tar.gz
+    sha256: acaef497b420a15761cb525562b04d880b5c7afacea02d435a5d166fd8a99a16
+    patches:
+      - patches/0001-unvendor-eigen.patch
 
 build:
   script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
   number: 0
-  skip: True # [py<39]
+  skip: true  # [py<39]
 
 requirements:
   build:
-    - {{ compiler('cxx') }}
+    - {{ stdlib('c') }}
     - {{ compiler('c') }}
+    - {{ compiler('cxx') }}
   host:
     - python
-    - numpy {{ numpy }}
-    - setuptools
     - pip
-    - wheel
+    - numpy {{ numpy }}
+    - setuptools >=80.9.0
+    # third-party unvendor
+    - eigen 5.0.1
   run:
     - python
-    - numpy
+    - numpy >=1.21.2  # [py==310]
+    - numpy >=1.23.3  # [py==311]
+    - numpy >=1.26.0  # [py==312]
+    - numpy >=2.1.0  # [py>=313]
+
 test:
+  source_files:
+    - ml_dtypes/tests
   imports:
     - ml_dtypes
   requires:
     - pip
+    - pytest
+    - absl-py
   commands:
     - pip check
-    # Maintainers dropped tests from source builds, we may want to build from source if problems are found.
+    - python -c "from importlib.metadata import version; assert(version('{{ name }}')=='{{ version }}')"
+    - pytest -v ml_dtypes/tests
 
 about:
-  home: https://pypi.org/project/ml-dtypes/
+  home: https://pypi.org/project/ml-dtypes
   summary: A stand-alone implementation of several NumPy dtype extensions used in machine learning libraries
   description: |
     ml_dtypes is a stand-alone implementation of several NumPy dtype extensions used in machine learning libraries, including:
     bfloat16: an alternative to the standard float16 format
     float8_*: several experimental 8-bit floating point representations including:
-      float8_e4m3b11fnuz, float8_e4m3fn, float8_e4m3fnuz, float8_e5m2, float8_e5m2fnuz
+    float8_e4m3b11fnuz, float8_e4m3fn, float8_e4m3fnuz, float8_e5m2, float8_e5m2fnuz
     int4 and uint4: low precision integer types.
   dev_url: https://github.com/jax-ml/ml_dtypes
   doc_url: https://github.com/jax-ml/ml_dtypes
-  # Mozilla license is also present, but only applies to pre-compiled wheels.
   license: Apache-2.0
   license_family: APACHE
   license_file: LICENSE
