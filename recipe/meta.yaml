@@ -6,11 +6,10 @@ package:
   version: {{ version }}
 
 source:
-  - url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
-    sha256: 95ce33057ba4d05df50b1f3cfefab22e351868a843b3b15a46c65836283670c9
-  - url: https://github.com/jax-ml/{{ name }}/archive/refs/tags/v{{ version }}.tar.gz
+    url: https://github.com/jax-ml/{{ name }}/archive/refs/tags/v{{ version }}.tar.gz
     sha256: 4247e493b5b6fa01574b14fb0377ba3a6e76c7bdc0ae309f08d7d7bcc5bbbd7d
-    folder: test_src
+    patches:
+      - patches/0001-unvendor-eigen.patch
 
 build:
   script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
@@ -27,13 +26,18 @@ requirements:
     - pip
     - numpy {{ numpy }}
     - setuptools >=80.8.0,<81.0.0
+    # third-party unvendor
+    - eigen 5.0.1
   run:
     - python
-    - numpy # bounds through run_exports
+    - numpy >=1.21.2  # [py==310]
+    - numpy >=1.23.3  # [py==311]
+    - numpy >=1.26.0  # [py==312]
+    - numpy >=2.1.0  # [py==313]
 
 test:
   source_files:
-    - test_src
+    - ml_dtypes/tests
   imports:
     - ml_dtypes
   requires:
@@ -43,7 +47,7 @@ test:
   commands:
     - pip check
     - python -c "from importlib.metadata import version; assert(version('{{ name }}')=='{{ version }}')"
-    - pytest -v test_src/ml_dtypes/tests
+    - pytest -v ml_dtypes/tests
 
 about:
   home: https://pypi.org/project/ml-dtypes
@@ -56,7 +60,6 @@ about:
     int4 and uint4: low precision integer types.
   dev_url: https://github.com/jax-ml/ml_dtypes
   doc_url: https://github.com/jax-ml/ml_dtypes
-  # Mozilla license is also present, but only applies to pre-compiled wheels.
   license: Apache-2.0
   license_family: APACHE
   license_file: LICENSE
