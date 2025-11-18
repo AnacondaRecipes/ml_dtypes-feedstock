@@ -33,7 +33,7 @@ requirements:
     - numpy >=1.21.2  # [py==310]
     - numpy >=1.23.3  # [py==311]
     - numpy >=1.26.0  # [py==312]
-    - numpy >=2.1.0  # [py==313]
+    - numpy >=2.1.0  # [py>=313]
 
 test:
   source_files:
