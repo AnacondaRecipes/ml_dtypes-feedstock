@@ -24,7 +24,7 @@ requirements:
   host:
     - python
     - pip
-    - numpy >2
+    - numpy {{ numpy }}
     - setuptools >=80.8.0,<81.0.0
     # third-party unvendor
     - eigen 5.0.1
