@@ -1,78 +1,17 @@
-From fe37dc84bf2a53c1d532efa6911f3ab37617b539 Mon Sep 17 00:00:00 2001
+From f8819b66b346dfdbefc06be6a6d2f44874003e91 Mon Sep 17 00:00:00 2001
 From: Patryk Kups <pkups@anaconda.com>
-Date: Mon, 17 Nov 2025 12:44:10 +0100
+Date: Tue, 18 Nov 2025 14:21:15 +0100
 Subject: [PATCH] patch
 
 ---
- 0001-patch.patch | 53 ++++++++++++++++++++++++++++++++++++++++++++++++
- setup.py         |  9 ++++----
- 2 files changed, 58 insertions(+), 4 deletions(-)
- create mode 100644 0001-patch.patch
+ setup.py | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
-diff --git a/0001-patch.patch b/0001-patch.patch
-new file mode 100644
-index 0000000..ec9befb
---- /dev/null
-+++ b/0001-patch.patch
-@@ -0,0 +1,53 @@
-+From 3169cb75432cd6d18dda2a34913801fbcfd37ad4 Mon Sep 17 00:00:00 2001
-+From: Patryk Kups <pkups@anaconda.com>
-+Date: Mon, 17 Nov 2025 12:39:29 +0100
-+Subject: [PATCH] patch
-+
-+---
-+ setup.py | 8 ++++----
-+ 1 file changed, 4 insertions(+), 4 deletions(-)
-+
-+diff --git a/setup.py b/setup.py
-+index 446cee8..8f6bffd 100644
-+--- a/setup.py
-++++ b/setup.py
-+@@ -14,24 +14,23 @@
-+ 
-+ """Setuptool-based build for ml_dtypes."""
-+ 
-++import os
-+ import fnmatch
-+ import platform
-+ import numpy as np
-+ from setuptools import Extension
-+ from setuptools import setup
-+ from setuptools.command.build_py import build_py as build_py_orig
-+-
-++    
-+ if platform.system() == "Windows":
-+   COMPILE_ARGS = [
-+       "/std:c++17",
-+-      "/DEIGEN_MPL2_ONLY",
-+       "/EHsc",
-+       "/bigobj",
-+   ]
-+ else:
-+   COMPILE_ARGS = [
-+       "-std=c++17",
-+-      "-DEIGEN_MPL2_ONLY",
-+       "-fvisibility=hidden",
-+       # -ftrapping-math is necessary because NumPy looks at floating point
-+       # exception state to determine whether to emit, e.g., invalid value
-+@@ -66,7 +65,8 @@ setup(
-+                 "ml_dtypes/_src/numpy.cc",
-+             ],
-+             include_dirs=[
-+-                "third_party/eigen",
-++                # "third_party/eigen",
-++                os.path.join(sys.prefix, "include", "eigen3"),
-+                 ".",
-+                 np.get_include(),
-+             ],
-+-- 
-+2.45.2
-+
 diff --git a/setup.py b/setup.py
-index 446cee8..3ca7dac 100644
+index 446cee8..716b7c9 100644
 --- a/setup.py
 +++ b/setup.py
-@@ -14,24 +14,24 @@
+@@ -14,6 +14,8 @@
  
  """Setuptool-based build for ml_dtypes."""
  
@@ -81,32 +20,16 @@ index 446cee8..3ca7dac 100644
  import fnmatch
  import platform
  import numpy as np
- from setuptools import Extension
- from setuptools import setup
- from setuptools.command.build_py import build_py as build_py_orig
--
-+    
- if platform.system() == "Windows":
-   COMPILE_ARGS = [
-       "/std:c++17",
--      "/DEIGEN_MPL2_ONLY",
-       "/EHsc",
-       "/bigobj",
-   ]
- else:
-   COMPILE_ARGS = [
-       "-std=c++17",
--      "-DEIGEN_MPL2_ONLY",
-       "-fvisibility=hidden",
-       # -ftrapping-math is necessary because NumPy looks at floating point
-       # exception state to determine whether to emit, e.g., invalid value
-@@ -66,7 +66,8 @@ setup(
+@@ -66,7 +68,11 @@ setup(
                  "ml_dtypes/_src/numpy.cc",
              ],
              include_dirs=[
 -                "third_party/eigen",
-+                # "third_party/eigen",
-+                os.path.join(sys.prefix, "include", "eigen3"),
++                (
++                    os.path.join(sys.prefix, "Library", "include", "eigen3")
++                    if sys.platform.startswith("win")
++                    else os.path.join(sys.prefix, "include", "eigen3")
++                ),
                  ".",
                  np.get_include(),
              ],
