@@ -1,20 +1,20 @@
 {% set name = "ml_dtypes" %}
-{% set version = "0.5.4" %}
+{% set version = "0.6.0" %}
 
 package:
   name: {{ name|lower }}
   version: {{ version }}
 
 source:
-    url: https://github.com/jax-ml/{{ name }}/archive/refs/tags/v{{ version }}.tar.gz
-    sha256: acaef497b420a15761cb525562b04d880b5c7afacea02d435a5d166fd8a99a16
-    patches:
-      - patches/0001-unvendor-eigen.patch
+  url: https://github.com/jax-ml/{{ name }}/archive/refs/tags/v{{ version }}.tar.gz
+  sha256: 8459353101f8c90c17e2167e2c283d78f1e60f325c4bc1e1e851d799969b7614
+  patches:
+    - patches/0001-unvendor-eigen.patch
 
 build:
   script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
   number: 0
-  skip: true  # [py<39]
+  skip: true  # [py<310]
 
 requirements:
   build:
@@ -25,9 +25,9 @@ requirements:
     - python
     - pip
     - numpy {{ numpy }}
-    - setuptools >=80.9.0
     # third-party unvendor
     - eigen 5.0.1
+    - scikit-build-core
   run:
     - python
     - numpy >=1.21.2  # [py==310]
