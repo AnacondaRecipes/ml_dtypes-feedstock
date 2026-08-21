@@ -50,7 +50,7 @@ test:
     - pytest -v ml_dtypes/tests
 
 about:
-  home: https://pypi.org/project/ml-dtypes
+  home: https://github.com/jax-ml/ml_dtypes
   summary: A stand-alone implementation of several NumPy dtype extensions used in machine learning libraries
   description: |
     ml_dtypes is a stand-alone implementation of several NumPy dtype extensions used in machine learning libraries, including:
