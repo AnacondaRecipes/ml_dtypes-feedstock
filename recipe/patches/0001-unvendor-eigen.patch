@@ -1,38 +1,16 @@
-From f8819b66b346dfdbefc06be6a6d2f44874003e91 Mon Sep 17 00:00:00 2001
-From: Patryk Kups <pkups@anaconda.com>
-Date: Tue, 18 Nov 2025 14:21:15 +0100
-Subject: [PATCH] patch
-
----
- setup.py | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
-
-diff --git a/setup.py b/setup.py
-index 446cee8..716b7c9 100644
---- a/setup.py
-+++ b/setup.py
-@@ -14,6 +14,8 @@
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -10,11 +10,8 @@
+     COMMAND_ERROR_IS_FATAL ANY
+ )
  
- """Setuptool-based build for ml_dtypes."""
+-# Add Eigen as a submodule. This will run Eigen's configuration step and generate headers.
+-set(EIGEN_BUILD_TESTING OFF CACHE BOOL "" FORCE)
+-set(EIGEN_BUILD_DOC OFF CACHE BOOL "" FORCE)
+-set(EIGEN_BUILD_PKGCONFIG OFF CACHE BOOL "" FORCE)
+-add_subdirectory(third_party/eigen EXCLUDE_FROM_ALL)
++# unvendored Eigen
++find_package(Eigen3 CONFIG REQUIRED)
  
-+import os
-+import sys
- import fnmatch
- import platform
- import numpy as np
-@@ -66,7 +68,11 @@ setup(
-                 "ml_dtypes/_src/numpy.cc",
-             ],
-             include_dirs=[
--                "third_party/eigen",
-+                (
-+                    os.path.join(sys.prefix, "Library", "include", "eigen3")
-+                    if sys.platform.startswith("win")
-+                    else os.path.join(sys.prefix, "include", "eigen3")
-+                ),
-                 ".",
-                 np.get_include(),
-             ],
--- 
-2.45.2
-
+ Python_add_library(_ml_dtypes_ext MODULE WITH_SOABI
+     ml_dtypes/_src/dtypes.cc
